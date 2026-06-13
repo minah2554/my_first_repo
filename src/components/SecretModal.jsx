@@ -13,7 +13,6 @@ export default function SecretModal({
 
   if (!isOpen) return null;
 
-  // Filter only active students who are not excluded, to be candidate for secret drawing
   const eligibleStudents = students.filter(s => !s.excluded);
 
   const handleAdd = (e) => {
@@ -27,19 +26,18 @@ export default function SecretModal({
     <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="secret-modal-title">
       <div className="modal-content secret-modal-content">
         <button className="modal-close" onClick={onClose} aria-label="닫기">
-          &times;
+          ✕
         </button>
 
-        <h2 id="secret-modal-title" className="card-title neon-glow-pink">
+        <h2 id="secret-modal-title" className="secret-modal-title-text">
           🔒 SYSTEM OVERRIDE
         </h2>
         
         <p className="secret-desc">
-          여기는 교사 전용 비밀 설정 화면입니다. <br />
-          아래에서 대상을 지정하면 다음 SPIN을 돌렸을 때 <strong>지정한 순서대로 당첨</strong>됩니다.
+          교사 전용 예약 추첨 제어판입니다. 지정된 학생들은 다음 스핀에서 예약한 순서대로 반드시 당첨됩니다.
         </p>
 
-        {/* Add student to next queue */}
+        {/* Add Student Form */}
         <form onSubmit={handleAdd} className="secret-form">
           <div className="form-group">
             <label className="form-label" htmlFor="secret-student-select">발표자 예약 지정</label>
@@ -58,19 +56,19 @@ export default function SecretModal({
                 ))}
               </select>
               <button type="submit" className="btn-arcade btn-pink secret-add-btn">
-                예약
+                등록
               </button>
             </div>
           </div>
         </form>
 
-        {/* Current Secret Queue List */}
+        {/* Secret Queue Section */}
         <div className="secret-queue-section">
           <div className="secret-queue-header">
-            <span className="form-label">예약된 당첨 순서</span>
+            <span className="form-label">예약 대기열</span>
             {secretQueue.length > 0 && (
               <button onClick={onClearQueue} className="clear-queue-btn">
-                예약 모두 취소
+                전체 초기화
               </button>
             )}
           </div>
@@ -78,8 +76,7 @@ export default function SecretModal({
           <div className="secret-queue-list">
             {secretQueue.length === 0 ? (
               <div className="secret-empty-state">
-                예약된 학생이 없습니다. <br />
-                스핀을 돌릴 때 무작위로 발표자가 선정됩니다.
+                예약된 학생이 없습니다. <br />스핀을 진행할 때 무작위로 추첨합니다.
               </div>
             ) : (
               <ol className="secret-ol">
@@ -92,7 +89,7 @@ export default function SecretModal({
                       className="remove-queue-btn"
                       title="예약 취소"
                     >
-                      &times;
+                      ✕
                     </button>
                   </li>
                 ))}
@@ -103,93 +100,108 @@ export default function SecretModal({
 
         <div className="secret-modal-footer">
           <button onClick={onClose} className="btn-arcade btn-cyan w-100">
-            비밀 설정 닫기
+            비밀 설정 완료
           </button>
         </div>
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
         .secret-modal-content {
-          border-color: var(--neon-pink);
-          box-shadow: 0 0 35px var(--neon-pink);
-          background-color: #0b0716;
+          border: 1.5px solid var(--figma-primary) !important;
+          box-shadow: 0 16px 48px rgba(0,0,0,0.16) !important;
+          background-color: var(--figma-canvas) !important;
+          border-radius: var(--rounded-lg);
+          padding: var(--spacing-lg) !important;
+        }
+
+        .secret-modal-title-text {
+          font-family: var(--font-sans);
+          font-size: 1.3rem;
+          font-weight: 700;
+          color: var(--figma-ink);
+          margin-bottom: var(--spacing-sm);
+          letter-spacing: -0.2px;
         }
 
         .secret-desc {
-          font-size: 0.85rem;
-          color: #a49dbb;
+          font-size: 0.88rem;
+          color: #666666;
           line-height: 1.5;
-          margin-bottom: 20px;
-          border-left: 3px solid var(--neon-pink);
+          margin-bottom: var(--spacing-md);
+          border-left: 2px solid var(--figma-primary);
           padding-left: 10px;
         }
 
         .secret-form {
-          margin-bottom: 20px;
+          margin-bottom: var(--spacing-md);
         }
 
         .secret-input-row {
           display: flex;
-          gap: 10px;
+          gap: 8px;
         }
 
         .secret-select {
           flex: 1;
-          background-color: var(--bg-input);
-          color: #fff;
+          background-color: var(--figma-canvas);
+          color: var(--figma-ink);
+          border: 1px solid var(--figma-hairline);
+          border-radius: var(--rounded-md);
           cursor: pointer;
+          font-size: 0.9rem;
         }
 
         .secret-select option {
-          background-color: var(--bg-card);
-          color: #fff;
+          background-color: var(--figma-canvas);
+          color: var(--figma-ink);
         }
 
         .secret-add-btn {
-          font-size: 0.75rem;
-          padding: 10px 16px;
+          font-size: 0.85rem;
+          padding: 8px 16px;
         }
 
         .secret-queue-section {
-          background-color: rgba(255, 0, 85, 0.03);
-          border: 1px dashed var(--neon-pink);
-          border-radius: 8px;
-          padding: 12px;
-          margin-bottom: 20px;
+          background-color: var(--figma-surface-soft);
+          border: 1px solid var(--figma-hairline);
+          border-radius: var(--rounded-md);
+          padding: var(--spacing-sm);
+          margin-bottom: var(--spacing-md);
         }
 
         .secret-queue-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 8px;
+          margin-bottom: var(--spacing-xs);
         }
 
         .clear-queue-btn {
           background: transparent;
           border: none;
-          color: var(--neon-yellow);
+          color: #888888;
           cursor: pointer;
-          font-size: 0.7rem;
-          font-family: var(--font-title);
+          font-size: 0.72rem;
+          font-family: var(--font-mono);
           text-transform: uppercase;
         }
 
         .clear-queue-btn:hover {
+          color: var(--figma-ink);
           text-decoration: underline;
         }
 
         .secret-queue-list {
-          min-height: 120px;
-          max-height: 200px;
+          min-height: 100px;
+          max-height: 180px;
           overflow-y: auto;
         }
 
         .secret-empty-state {
-          color: #6a6480;
+          color: #888888;
           font-size: 0.8rem;
           text-align: center;
-          padding: 30px 10px;
+          padding: var(--spacing-lg) 10px;
           line-height: 1.4;
         }
 
@@ -202,26 +214,28 @@ export default function SecretModal({
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 6px 8px;
-          background-color: rgba(31, 20, 53, 0.4);
-          border-radius: 4px;
+          padding: 6px 10px;
+          background-color: var(--figma-canvas);
+          border: 1px solid var(--figma-hairline-soft);
+          border-radius: var(--rounded-sm);
           margin-bottom: 6px;
           font-family: var(--font-body);
         }
 
         .queue-badge {
-          font-family: var(--font-arcade);
-          font-size: 0.55rem;
-          color: var(--neon-pink);
-          background-color: rgba(255, 0, 85, 0.1);
-          padding: 3px 6px;
-          border-radius: 3px;
+          font-family: var(--font-mono);
+          font-size: 0.65rem;
+          font-weight: 700;
+          color: var(--figma-ink);
+          background-color: var(--figma-hairline);
+          padding: 2px 6px;
+          border-radius: var(--rounded-sm);
         }
 
         .queue-name {
-          color: #fff;
+          color: var(--figma-ink);
           font-weight: 700;
-          font-size: 0.95rem;
+          font-size: 0.9rem;
           flex: 1;
           margin-left: 12px;
         }
@@ -229,15 +243,15 @@ export default function SecretModal({
         .remove-queue-btn {
           background: transparent;
           border: none;
-          color: var(--neon-pink);
-          font-size: 1.2rem;
+          color: #888888;
+          font-size: 0.8rem;
+          font-family: var(--font-mono);
           cursor: pointer;
           line-height: 1;
         }
 
         .remove-queue-btn:hover {
-          color: var(--neon-cyan);
-          transform: scale(1.1);
+          color: #ff3333;
         }
 
         .secret-modal-footer {

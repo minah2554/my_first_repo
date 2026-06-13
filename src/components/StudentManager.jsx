@@ -17,7 +17,6 @@ export default function StudentManager({
   const [singleName, setSingleName] = useState('');
   const [bulkInput, setBulkInput] = useState('');
 
-  // Handle single student addition
   const handleSingleAdd = (e) => {
     e.preventDefault();
     const trimmed = singleName.trim();
@@ -26,12 +25,10 @@ export default function StudentManager({
     setSingleName('');
   };
 
-  // Handle bulk students addition
   const handleBulkAdd = (e) => {
     e.preventDefault();
     if (!bulkInput.trim()) return;
     
-    // Split by comma or newline, filter out empty elements
     const names = bulkInput
       .split(/[,\n]/)
       .map(name => name.trim())
@@ -40,19 +37,17 @@ export default function StudentManager({
     if (names.length > 0) {
       onBulkAddStudents(names);
       setBulkInput('');
-      setActiveTab('list'); // switch back to list
+      setActiveTab('list'); 
     }
   };
 
-  // Counters
   const totalCount = students.length;
   const activeCount = students.filter(s => !s.excluded).length;
-  const excludedCount = totalCount - activeCount;
 
   return (
-    <aside className="arcade-card student-manager-card" aria-label="학생 관리">
-      <div className="card-title" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span>🕹️ CONTROL PANEL</span>
+    <aside className="figma-sidebar figma-card" aria-label="학생 관리">
+      <div className="card-title-row">
+        <span className="sidebar-title">ROSTER SETTINGS</span>
         <button
           className="btn-settings-gear"
           onMouseDown={onSettingsHoldStart}
@@ -60,34 +55,24 @@ export default function StudentManager({
           onMouseUp={onSettingsHoldEnd}
           onMouseLeave={onSettingsHoldEnd}
           onTouchEnd={onSettingsHoldEnd}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            color: 'var(--neon-purple)',
-            cursor: 'pointer',
-            fontSize: '1.2rem',
-            padding: '2px 8px',
-            textShadow: 'var(--shadow-purple)',
-            transition: 'all 0.2s'
-          }}
           title="비밀 설정 (3초간 누르기)"
         >
           ⚙️
         </button>
       </div>
 
-      {/* Tabs Menu */}
-      <div className="tab-menu" role="tablist">
+      {/* Tabs Menu - Styled as Figma Pill Toggles */}
+      <div className="tab-menu-pill" role="tablist">
         <button
-          className={`tab-btn ${activeTab === 'list' ? 'active' : ''}`}
+          className={`tab-btn-pill ${activeTab === 'list' ? 'active' : ''}`}
           onClick={() => setActiveTab('list')}
           role="tab"
           aria-selected={activeTab === 'list'}
         >
-          학생 목록 ({activeCount}/{totalCount})
+          목록 ({activeCount}/{totalCount})
         </button>
         <button
-          className={`tab-btn ${activeTab === 'bulk' ? 'active' : ''}`}
+          className={`tab-btn-pill ${activeTab === 'bulk' ? 'active' : ''}`}
           onClick={() => setActiveTab('bulk')}
           role="tab"
           aria-selected={activeTab === 'bulk'}
@@ -95,63 +80,60 @@ export default function StudentManager({
           일괄 등록
         </button>
         <button
-          className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+          className={`tab-btn-pill ${activeTab === 'history' ? 'active' : ''}`}
           onClick={() => setActiveTab('history')}
           role="tab"
           aria-selected={activeTab === 'history'}
         >
-          추첨 기록
+          기록
         </button>
       </div>
 
       {/* Tab 1: Student List */}
       {activeTab === 'list' && (
-        <div className="tab-content" id="list-tab">
-          {/* Add Single Student Form */}
+        <div className="tab-content">
+          {/* Add Single Student */}
           <form onSubmit={handleSingleAdd} className="add-single-form">
             <input
               type="text"
-              placeholder="학생 이름 입력..."
+              placeholder="학생 추가..."
               value={singleName}
               onChange={(e) => setSingleName(e.target.value)}
               className="arcade-input single-add-input"
               maxLength={15}
             />
-            <button type="submit" className="btn-arcade btn-cyan add-btn">
+            <button type="submit" className="btn-arcade btn-pink add-btn">
               추가
             </button>
           </form>
 
-          {/* Quick Actions */}
+          {/* Quick Roster Actions */}
           <div className="roster-actions">
             <button
               onClick={() => onToggleAll(true)}
               className="btn-roster-action"
-              title="모든 학생을 추천 대상에서 제외합니다"
             >
-              전체 제외
+              모든 학생 제외
             </button>
             <button
               onClick={() => onToggleAll(false)}
               className="btn-roster-action"
-              title="모든 학생을 추천 대상에 포함합니다"
             >
-              전체 포함
+              모든 학생 포함
             </button>
             <button
               onClick={onResetRoster}
-              className="btn-roster-action reset-roster-btn"
-              title="학생 목록을 초기화합니다"
+              className="btn-roster-action reset-btn"
             >
               목록 초기화
             </button>
           </div>
 
-          {/* Scrollable Students List */}
+          {/* Roster Scroll List (Figma Surface Soft background) */}
           <div className="students-scroll-list">
             {students.length === 0 ? (
               <div className="empty-state">
-                등록된 학생이 없습니다.<br/>위에서 학생을 추가해주세요!
+                등록된 학생이 없습니다. <br />위에서 학생을 추가하거나 '일괄 등록'을 이용하세요.
               </div>
             ) : (
               students.map((student) => (
@@ -173,7 +155,7 @@ export default function StudentManager({
                     className="delete-student-btn"
                     title="삭제"
                   >
-                    🗑️
+                    ✕
                   </button>
                 </div>
               ))
@@ -184,15 +166,15 @@ export default function StudentManager({
 
       {/* Tab 2: Bulk Add */}
       {activeTab === 'bulk' && (
-        <div className="tab-content" id="bulk-tab">
+        <div className="tab-content">
           <form onSubmit={handleBulkAdd} className="bulk-add-form">
             <div className="form-group">
               <label className="form-label" htmlFor="bulk-textarea">
-                대량 학생 이름 입력
+                대량 학생 추가 (줄바꿈/쉼표 구분)
               </label>
               <textarea
                 id="bulk-textarea"
-                placeholder="쉼표(,)나 줄바꿈(엔터)으로 여러 학생의 이름을 입력하세요.&#10;예시:&#10;김철수, 이영희, 박민수&#10;최수민&#10;정지원"
+                placeholder="쉼표(,) 또는 줄바꿈으로 나누어 이름을 입력하세요.&#10;예: 김철수, 이영희, 박민수"
                 value={bulkInput}
                 onChange={(e) => setBulkInput(e.target.value)}
                 className="arcade-input arcade-textarea"
@@ -207,19 +189,19 @@ export default function StudentManager({
 
       {/* Tab 3: History Log */}
       {activeTab === 'history' && (
-        <div className="tab-content" id="history-tab">
+        <div className="tab-content">
           <div className="history-header">
-            <span className="form-label">최근 당첨자 기록</span>
+            <span className="form-label">추첨 로그</span>
             {history.length > 0 && (
               <button onClick={onClearHistory} className="clear-history-btn">
-                기록 삭제
+                로그 삭제
               </button>
             )}
           </div>
           <div className="history-scroll-list">
             {history.length === 0 ? (
               <div className="empty-state">
-                아직 당첨 기록이 없습니다.<br/>룰렛을 돌려 발표자를 추첨해보세요!
+                추첨 기록이 아직 비어있습니다.
               </div>
             ) : (
               history.map((item, idx) => (
@@ -233,48 +215,83 @@ export default function StudentManager({
         </div>
       )}
 
-      {/* Embedded Styles for StudentManager */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .student-manager-card {
+        .figma-sidebar {
+          background-color: var(--figma-canvas);
+          border: 1px solid var(--figma-hairline);
+          border-radius: var(--rounded-lg);
+          padding: var(--spacing-lg);
+          min-height: 520px;
           display: flex;
           flex-direction: column;
-          height: 100%;
-          min-height: 520px;
         }
 
-        .tab-menu {
+        .card-title-row {
           display: flex;
-          gap: 4px;
-          border-bottom: 2px solid var(--neon-purple);
-          margin-bottom: 16px;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: var(--spacing-md);
+          border-bottom: 1px solid var(--figma-hairline);
+          padding-bottom: var(--spacing-sm);
         }
 
-        .tab-btn {
+        .sidebar-title {
+          font-family: var(--font-sans);
+          font-size: 0.95rem;
+          font-weight: 700;
+          color: var(--figma-ink);
+          letter-spacing: -0.1px;
+        }
+
+        .btn-settings-gear {
+          background: transparent;
+          border: none;
+          color: #888888;
+          cursor: pointer;
+          font-size: 1.15rem;
+          padding: 4px;
+          line-height: 1;
+          transition: color 0.15s ease;
+        }
+
+        .btn-settings-gear:hover {
+          color: var(--figma-primary);
+        }
+
+        /* Figma Pill Toggles for Menu */
+        .tab-menu-pill {
+          display: flex;
+          gap: 2px;
+          background-color: var(--figma-surface-soft);
+          padding: 3px;
+          border-radius: var(--rounded-pill);
+          margin-bottom: var(--spacing-md);
+        }
+
+        .tab-btn-pill {
           flex: 1;
           background: transparent;
           border: none;
-          color: #6a6480;
-          font-family: var(--font-title);
+          color: #666666;
+          font-family: var(--font-sans);
           font-size: 0.8rem;
-          font-weight: 700;
-          padding: 10px 4px;
+          font-weight: 500;
+          padding: 6px 4px;
           cursor: pointer;
-          transition: all 0.2s ease;
-          border-radius: 4px 4px 0 0;
+          transition: all 0.15s ease;
+          border-radius: var(--rounded-pill);
           text-align: center;
         }
 
-        .tab-btn.active {
-          color: var(--neon-cyan);
-          text-shadow: var(--shadow-cyan);
-          background-color: rgba(0, 240, 255, 0.05);
-          border-bottom: 2px solid var(--neon-cyan);
-          margin-bottom: -2px;
+        .tab-btn-pill.active {
+          background-color: var(--figma-canvas);
+          color: var(--figma-ink);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+          font-weight: 700;
         }
 
-        .tab-btn:hover:not(.active) {
-          color: #a49dbb;
-          background-color: rgba(255, 255, 255, 0.02);
+        .tab-btn-pill:hover:not(.active) {
+          color: var(--figma-ink);
         }
 
         .tab-content {
@@ -283,63 +300,73 @@ export default function StudentManager({
           flex: 1;
         }
 
-        /* Single Add Form */
+        /* Forms */
         .add-single-form {
           display: flex;
-          gap: 8px;
-          margin-bottom: 12px;
+          gap: 6px;
+          margin-bottom: var(--spacing-sm);
         }
 
         .single-add-input {
           flex: 1;
+          padding: 8px 12px;
+          font-size: 0.9rem;
         }
 
         .add-btn {
-          padding-left: 14px;
-          padding-right: 14px;
+          font-size: 0.85rem;
+          padding: 8px 14px;
         }
 
-        /* Roster Actions */
+        /* Roster actions */
         .roster-actions {
-          display: flex;
-          justify-content: space-between;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
           gap: 6px;
-          margin-bottom: 12px;
+          margin-bottom: var(--spacing-sm);
         }
 
         .btn-roster-action {
-          background-color: rgba(31, 20, 53, 0.6);
-          border: 1px solid var(--neon-purple);
-          border-radius: 4px;
-          color: #a49dbb;
-          font-size: 0.75rem;
-          padding: 6px 8px;
+          background-color: var(--figma-canvas);
+          border: 1px solid var(--figma-hairline);
+          border-radius: var(--rounded-pill);
+          color: #555555;
+          font-family: var(--font-sans);
+          font-size: 0.72rem;
+          font-weight: 500;
+          padding: 6px 4px;
           cursor: pointer;
-          transition: all 0.2s;
-          flex: 1;
+          transition: all 0.15s ease;
+          text-align: center;
         }
 
         .btn-roster-action:hover {
-          color: #fff;
-          border-color: var(--neon-cyan);
-          background-color: rgba(0, 240, 255, 0.1);
+          background-color: var(--figma-surface-soft);
+          color: var(--figma-ink);
+          border-color: #b3b3b3;
         }
 
-        .btn-roster-action.reset-roster-btn:hover {
-          border-color: var(--neon-pink);
-          background-color: rgba(255, 0, 85, 0.1);
-          color: var(--neon-pink);
+        .btn-roster-action.reset-btn {
+          grid-column: span 2;
+          border-color: var(--figma-hairline);
+          color: #888888;
         }
 
-        /* Students Scroll List */
+        .btn-roster-action.reset-btn:hover {
+          border-color: #ffcccc;
+          color: #ff3333;
+          background-color: #fff5f5;
+        }
+
+        /* Scroll lists with clean surfaces */
         .students-scroll-list {
           flex: 1;
           overflow-y: auto;
-          background-color: #0d0818;
-          border-radius: 8px;
-          border: 1px solid #281a42;
-          padding: 8px;
-          max-height: 320px;
+          background-color: var(--figma-surface-soft);
+          border-radius: var(--rounded-md);
+          border: 1px solid var(--figma-hairline);
+          padding: var(--spacing-xs);
+          max-height: 290px;
         }
 
         .student-item {
@@ -347,17 +374,20 @@ export default function StudentManager({
           justify-content: space-between;
           align-items: center;
           padding: 8px 10px;
-          border-radius: 6px;
-          border-bottom: 1px solid #1c142c;
-          transition: all 0.15s ease;
+          border-radius: var(--rounded-sm);
+          background-color: var(--figma-canvas);
+          border: 1px solid var(--figma-hairline-soft);
+          margin-bottom: 6px;
+          transition: border-color 0.15s ease;
         }
 
         .student-item:hover {
-          background-color: rgba(255, 255, 255, 0.03);
+          border-color: #cccccc;
         }
 
         .student-item.excluded {
           opacity: 0.45;
+          background-color: transparent;
         }
 
         .student-label-checkbox {
@@ -370,81 +400,79 @@ export default function StudentManager({
         }
 
         .custom-checkbox {
-          width: 16px;
-          height: 16px;
-          accent-color: var(--neon-cyan);
+          width: 15px;
+          height: 15px;
+          accent-color: var(--figma-primary);
           cursor: pointer;
         }
 
         .student-name-text {
-          font-family: var(--font-body);
-          font-weight: 700;
-          font-size: 0.95rem;
-          color: #fff;
+          font-family: var(--font-sans);
+          font-weight: 500;
+          font-size: 0.9rem;
+          color: var(--figma-ink);
         }
 
         .delete-student-btn {
           background: transparent;
           border: none;
           cursor: pointer;
-          font-size: 1rem;
-          padding: 2px 4px;
-          transition: transform 0.1s;
+          font-size: 0.85rem;
+          color: #888888;
+          padding: 2px 6px;
+          font-family: var(--font-mono);
         }
 
         .delete-student-btn:hover {
-          transform: scale(1.2);
+          color: #ff3333;
         }
 
         .empty-state {
           text-align: center;
-          color: #6a6480;
+          color: #888888;
           font-size: 0.8rem;
           padding: 40px 10px;
           line-height: 1.5;
         }
 
-        /* Bulk Tab */
+        /* Bulk */
         .bulk-add-form {
           display: flex;
           flex-direction: column;
-          gap: 16px;
+          gap: var(--spacing-md);
           flex: 1;
         }
 
-        .w-100 {
-          width: 100%;
-        }
-
-        /* History Tab */
+        /* History */
         .history-header {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          margin-bottom: 10px;
+          margin-bottom: var(--spacing-sm);
         }
 
         .clear-history-btn {
           background: transparent;
           border: none;
-          color: var(--neon-pink);
+          color: #888888;
           cursor: pointer;
           font-size: 0.75rem;
-          font-family: var(--font-title);
+          font-family: var(--font-mono);
           text-transform: uppercase;
         }
 
         .clear-history-btn:hover {
+          color: var(--figma-ink);
           text-decoration: underline;
         }
 
         .history-scroll-list {
           flex: 1;
           overflow-y: auto;
-          background-color: #0d0818;
-          border-radius: 8px;
-          border: 1px solid #281a42;
-          padding: 8px;
+          background-color: var(--figma-surface-soft);
+          border-radius: var(--rounded-md);
+          border: 1px solid var(--figma-hairline);
+          padding: var(--spacing-xs);
           max-height: 350px;
         }
 
@@ -452,20 +480,22 @@ export default function StudentManager({
           display: flex;
           justify-content: space-between;
           padding: 8px 10px;
-          border-bottom: 1px solid #1c142c;
-          font-family: var(--font-body);
+          background-color: var(--figma-canvas);
+          border: 1px solid var(--figma-hairline-soft);
+          border-radius: var(--rounded-sm);
+          margin-bottom: 6px;
         }
 
         .history-time {
-          color: #6a6480;
-          font-size: 0.75rem;
+          color: #888888;
+          font-family: var(--font-mono);
+          font-size: 0.72rem;
         }
 
         .history-name {
-          color: var(--neon-cyan);
+          color: var(--figma-ink);
           font-weight: 700;
-          font-size: 0.95rem;
-          text-shadow: 0 0 5px rgba(0, 240, 255, 0.2);
+          font-size: 0.9rem;
         }
       `}} />
     </aside>

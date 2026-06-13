@@ -7,8 +7,6 @@ export default function App() {
   // ----------------------------------------------------
   // State Initialization
   // ----------------------------------------------------
-  
-  // Load students from localStorage or load a default list of 15 students
   const [students, setStudents] = useState(() => {
     const saved = localStorage.getItem('presenter_students');
     if (saved) {
@@ -32,7 +30,6 @@ export default function App() {
     }));
   });
 
-  // Load history from localStorage
   const [history, setHistory] = useState(() => {
     const saved = localStorage.getItem('presenter_history');
     if (saved) {
@@ -45,24 +42,20 @@ export default function App() {
     return [];
   });
 
-  // Secret predetermined winner queue (not saved in localStorage for stealthiness)
   const [secretQueue, setSecretQueue] = useState([]);
-  
   const [drawCount, setDrawCount] = useState(1);
   const [isSpinning, setIsSpinning] = useState(false);
   const [winners, setWinners] = useState([]);
   const [isSecretOpen, setIsSecretOpen] = useState(false);
 
-  // Settings hold timer reference
   const holdTimeoutRef = useRef(null);
 
-  // Save student roster whenever it changes
   useEffect(() => {
     localStorage.setItem('presenter_students', JSON.stringify(students));
   }, [students]);
 
   // ----------------------------------------------------
-  // Student Actions
+  // Student Roster Actions
   // ----------------------------------------------------
   const handleAddStudent = (name) => {
     const newStudent = {
@@ -86,14 +79,11 @@ export default function App() {
     setStudents(prev => prev.map(s => 
       s.id === id ? { ...s, excluded: !s.excluded } : s
     ));
-    
-    // Also remove from secretQueue if excluded
     setSecretQueue(prev => prev.filter(s => s.id !== id));
   };
 
   const handleDeleteStudent = (id) => {
     setStudents(prev => prev.filter(s => s.id !== id));
-    // Also remove from secretQueue
     setSecretQueue(prev => prev.filter(s => s.id !== id));
   };
 
@@ -108,7 +98,7 @@ export default function App() {
   const handleToggleAll = (excluded) => {
     setStudents(prev => prev.map(s => ({ ...s, excluded })));
     if (excluded) {
-      setSecretQueue([]); // clear secret queue if all excluded
+      setSecretQueue([]);
     }
   };
 
@@ -120,7 +110,7 @@ export default function App() {
   };
 
   // ----------------------------------------------------
-  // Secret Queue Actions
+  // Secret Override Actions
   // ----------------------------------------------------
   const handleAddToSecretQueue = (studentId) => {
     const student = students.find(s => s.id === studentId);
@@ -138,22 +128,14 @@ export default function App() {
   };
 
   // ----------------------------------------------------
-  // Settings Button Long Press (3 seconds hold)
+  // Hold Detection for Secret Configuration (3 seconds)
   // ----------------------------------------------------
-  const handleSettingsHoldStart = (e) => {
-    // Prevent default context menus or scrolling on mobile touch
-    if (e.type === 'touchstart') {
-      // Don't fully preventDefault to allow clicking
-    }
-    
-    // Clear any existing timer just in case
+  const handleSettingsHoldStart = () => {
     if (holdTimeoutRef.current) {
       clearTimeout(holdTimeoutRef.current);
     }
-
     holdTimeoutRef.current = setTimeout(() => {
       setIsSecretOpen(true);
-      // Trigger haptic feedback if available on mobile
       if (navigator.vibrate) {
         navigator.vibrate(100);
       }
@@ -167,7 +149,6 @@ export default function App() {
     }
   };
 
-  // Cleanup timers on unmount
   useEffect(() => {
     return () => {
       if (holdTimeoutRef.current) {
@@ -177,19 +158,19 @@ export default function App() {
   }, []);
 
   // ----------------------------------------------------
-  // Main Spin / Draw Logic
+  // Draw / Spin Action Logic
   // ----------------------------------------------------
   const handleSpin = () => {
     if (isSpinning) return;
 
     const activeStudents = students.filter(s => !s.excluded);
     if (activeStudents.length === 0) {
-      alert('활성화된 학생이 없습니다. CONTROL PANEL의 학생 목록에서 추천 대상 학생들을 확인(체크)해 주세요!');
+      alert('활성화된 학생이 없습니다. 학생 목록에서 추천 대상 학생들을 확인(체크)해 주세요!');
       return;
     }
 
     if (activeStudents.length < drawCount) {
-      alert(`활성화된 학생 수(${activeStudents.length}명)가 추첨할 인원(${drawCount}명)보다 적습니다.`);
+      alert(`활성화된 학생 수(${activeStudents.length}명)가 선택한 추첨 인원(${drawCount}명)보다 적습니다.`);
       return;
     }
 
@@ -202,50 +183,45 @@ export default function App() {
     for (let i = 0; i < drawCount; i++) {
       let selectedWinner = null;
 
-      // 1. If there's an override in the secret queue, pull it
+      // Check if override target is available in secret queue
       if (currentSecretQueue.length > 0) {
         const nextSecret = currentSecretQueue.shift();
-        // Check if the secret student exists and is currently active
         const isEligible = availableCandidates.some(s => s.id === nextSecret.id);
         if (isEligible) {
           selectedWinner = nextSecret;
         }
       }
 
-      // 2. Otherwise, draw a random winner from the remaining candidates
+      // Otherwise, draw random candidate
       if (!selectedWinner) {
         const randomIndex = Math.floor(Math.random() * availableCandidates.length);
         selectedWinner = availableCandidates[randomIndex];
       }
 
       chosenWinners.push(selectedWinner);
-      
-      // Remove this winner from the candidates pool to prevent duplicate draws in the same spin
       availableCandidates = availableCandidates.filter(s => s.id !== selectedWinner.id);
     }
 
     setWinners(chosenWinners);
-    setSecretQueue(currentSecretQueue); // Update the secret queue (e.g. elements are shifted out)
+    setSecretQueue(currentSecretQueue); 
   };
 
   const handleSpinFinished = () => {
     setIsSpinning(false);
 
-    // Save winners to drawing history
     const now = new Date();
-    const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false }); // Format: HH:MM:SS
+    const timeStr = now.toLocaleTimeString('ko-KR', { hour12: false });
     
     const newHistoryEntries = winners.map(winner => ({
       name: winner.name,
       time: timeStr
     }));
 
-    const updatedHistory = [...newHistoryEntries, ...history].slice(0, 50); // Keep last 50
+    const updatedHistory = [...newHistoryEntries, ...history].slice(0, 50);
     setHistory(updatedHistory);
     localStorage.setItem('presenter_history', JSON.stringify(updatedHistory));
   };
 
-  // Keep winners container sized dynamically
   useEffect(() => {
     if (!isSpinning && winners.length !== drawCount) {
       setWinners(Array(drawCount).fill(null));
@@ -254,29 +230,25 @@ export default function App() {
 
   return (
     <main className="app-container">
-      {/* CRT scanline filters */}
-      <div className="crt-overlay" />
-      <div className="crt-flicker" />
-
-      {/* Header section */}
+      {/* Header section with figmaSans modulation style (heavy vs light) */}
       <header className="app-header">
         <h1 className="app-title">
-          <span>READY PLAYER</span>
-          <span className="neon-pink-text">DRAW</span>
+          <span>READY PLAYER </span>
+          <span className="title-draw-weight">DRAW</span>
         </h1>
-        <div className="app-subtitle">🕹️ CLASSROOM PRESENTER SELECTOR 🕹️</div>
+        <div className="app-subtitle">DESIGN_SYSTEM_V.ALPHA // PRESENTER SELECTOR</div>
       </header>
 
-      {/* Main Grid: Slot Machine & Manager */}
+      {/* Main Grid Layout */}
       <div className="dashboard-grid">
-        <section className="arcade-card slot-machine-card" aria-label="추첨기">
+        <section className="arcade-card figma-card slot-card" aria-label="추첨 룰렛">
           <div className="card-title">
-            ⚡ LUCKY SELECTOR
+            <span>⚡ LUCKY DRAW CANVAS</span>
           </div>
 
           {/* Draw Count Picker */}
           <div className="draw-controls">
-            <span className="form-label">발표 추첨 인원수</span>
+            <span className="form-label">추첨 인원수</span>
             <div className="count-picker">
               {[1, 2, 3, 4, 5].map((num) => (
                 <button
@@ -292,7 +264,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Slot Machine Display */}
+          {/* Slot Machine Roll Canvas */}
           <SlotMachine
             isSpinning={isSpinning}
             winners={winners}
@@ -300,7 +272,7 @@ export default function App() {
             onSpinFinished={handleSpinFinished}
           />
 
-          {/* Giant Arcade Spin Button */}
+          {/* Figma Primary Pill Action button */}
           <div className="spin-btn-container">
             <button
               onClick={handleSpin}
@@ -308,12 +280,12 @@ export default function App() {
               className="btn-spin-giant"
               aria-label="추첨 시작"
             >
-              <span>{isSpinning ? 'SPINNING' : 'SPIN'}</span>
+              <span>{isSpinning ? 'SELECTING_PRESENTER...' : 'SPIN'}</span>
             </button>
           </div>
         </section>
 
-        {/* Student Manager Sidebar */}
+        {/* Student manager sidebar */}
         <StudentManager
           students={students}
           history={history}
@@ -329,7 +301,7 @@ export default function App() {
         />
       </div>
 
-      {/* Hidden Secret Overlay */}
+      {/* Hidden Secret Dialog overlay */}
       <SecretModal
         isOpen={isSecretOpen}
         onClose={() => setIsSecretOpen(false)}
@@ -340,21 +312,27 @@ export default function App() {
         onClearQueue={handleClearSecretQueue}
       />
 
-      {/* Subtle footer with stealth secret dot indicator */}
+      {/* Subtle footer with stealth indicator dot */}
       <footer className="app-footer">
         <p>
-          © 2026 Antigravity Class Arcade
+          © 2026 FIGMA PRESENTER SELECTOR
           <span 
             className={`secret-indicator ${secretQueue.length > 0 ? 'active' : ''}`}
-            title="Stealth system override status"
+            title="Stealth override status"
             aria-hidden="true"
           />
         </p>
       </footer>
 
-      {/* Extra card specific overrides */}
+      {/* Inline figmaSans title font-weight modulation */}
       <style dangerouslySetInnerHTML={{ __html: `
-        .slot-machine-card {
+        .title-draw-weight {
+          font-weight: 300 !important;
+          color: #888888;
+        }
+
+        .slot-card {
+          min-height: 520px;
           display: flex;
           flex-direction: column;
           justify-content: space-between;

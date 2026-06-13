@@ -1,21 +1,48 @@
 :root {
-  --neon-pink: #ff0055;
-  --neon-cyan: #00f0ff;
-  --neon-purple: #9d00ff;
-  --neon-yellow: #ffdd00;
-  --neon-green: #39ff14;
-  --bg-dark: #0a0612;
-  --bg-card: #140d24;
-  --bg-input: #1f1435;
-  --font-title: 'Orbitron', 'Noto Sans KR', sans-serif;
-  --font-arcade: 'Press Start 2P', cursive, sans-serif;
-  --font-body: 'Noto Sans KR', sans-serif;
+  /* Colors */
+  --figma-primary: #000000;
+  --figma-on-primary: #ffffff;
+  --figma-ink: #000000;
+  --figma-canvas: #ffffff;
+  --figma-inverse-canvas: #000000;
+  --figma-inverse-ink: #ffffff;
+  --figma-hairline: #e6e6e6;
+  --figma-hairline-soft: #f1f1f1;
+  --figma-surface-soft: #f7f7f5;
   
-  --shadow-pink: 0 0 10px var(--neon-pink), 0 0 20px rgba(255, 0, 85, 0.3);
-  --shadow-cyan: 0 0 10px var(--neon-cyan), 0 0 20px rgba(0, 240, 255, 0.3);
-  --shadow-purple: 0 0 10px var(--neon-purple), 0 0 20px rgba(157, 0, 255, 0.3);
-  --shadow-yellow: 0 0 10px var(--neon-yellow), 0 0 20px rgba(255, 221, 0, 0.3);
-  --shadow-green: 0 0 10px var(--neon-green), 0 0 20px rgba(57, 255, 20, 0.3);
+  /* Color Blocks */
+  --block-lime: #dceeb1;
+  --block-lilac: #c5b0f4;
+  --block-cream: #f4ecd6;
+  --block-pink: #efd4d4;
+  --block-mint: #c8e6cd;
+  --block-coral: #f3c9b6;
+  --block-navy: #1f1d3d;
+  --accent-magenta: #ff3d8b;
+  --semantic-success: #1ea64a;
+  
+  /* Typography Families */
+  --font-sans: 'Inter', 'Noto Sans KR', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  
+  /* Rounded Radius */
+  --rounded-xs: 2px;
+  --rounded-sm: 6px;
+  --rounded-md: 8px;
+  --rounded-lg: 24px;
+  --rounded-xl: 32px;
+  --rounded-pill: 50px;
+  --rounded-full: 9999px;
+  
+  /* Spacing */
+  --spacing-xxs: 4px;
+  --spacing-xs: 8px;
+  --spacing-sm: 12px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-section: 96px;
 }
 
 /* Global Reset & Base */
@@ -26,432 +53,401 @@
 }
 
 body {
-  background-color: var(--bg-dark);
-  color: #f0f0f8;
-  font-family: var(--font-body);
+  background-color: var(--figma-canvas);
+  color: var(--figma-ink);
+  font-family: var(--font-sans);
+  font-size: 18px;
+  font-weight: 320;
+  line-height: 1.45;
+  letter-spacing: -0.26px;
   overflow-x: hidden;
   min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scanline and CRT screen effect */
-.crt-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-  background-size: 100% 4px;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.4;
+/* Remove CRT/Scanline effects visually */
+.crt-overlay, .crt-flicker {
+  display: none !important;
 }
 
-.crt-flicker {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 9998;
-  pointer-events: none;
-  background: rgba(18, 16, 16, 0.03);
-  opacity: 0.15;
-  animation: flicker 0.15s infinite;
-}
-
-/* Custom Scrollbar */
+/* Scrollbar Customization - Figma style (flat, thin) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: var(--figma-canvas);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--neon-purple);
-  border-radius: 4px;
-  box-shadow: inset 0 0 3px var(--neon-cyan);
+  background: var(--figma-hairline);
+  border-radius: var(--rounded-full);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--neon-pink);
+  background: #cccccc;
 }
 
-/* Layout */
+/* App Container */
 .app-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 20px;
-  max-width: 1400px;
+  padding: var(--spacing-xl);
+  max-width: 1320px;
   margin: 0 auto;
-  position: relative;
-  z-index: 10;
 }
 
-/* Header styling */
+@media (max-width: 768px) {
+  .app-container {
+    padding: var(--spacing-md);
+  }
+}
+
+/* Header Styling */
 .app-header {
   text-align: center;
-  margin-bottom: 30px;
-  position: relative;
+  margin-bottom: var(--spacing-xl);
+  border-bottom: 1px solid var(--figma-hairline);
+  padding-bottom: var(--spacing-lg);
 }
 
 .app-title {
-  font-family: var(--font-title);
+  font-family: var(--font-sans);
+  font-size: 4.2rem;
   font-weight: 900;
-  font-size: 2.8rem;
-  text-transform: uppercase;
-  color: #fff;
-  text-shadow: var(--shadow-cyan);
-  letter-spacing: 2px;
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
+  line-height: 1.05;
+  letter-spacing: -2px;
+  color: var(--figma-primary);
+  text-transform: none;
 }
 
 .app-title span.neon-pink-text {
-  color: var(--neon-pink);
-  text-shadow: var(--shadow-pink);
+  color: var(--figma-primary);
+  text-shadow: none;
+  font-weight: 300;
 }
 
 .app-subtitle {
-  font-family: var(--font-arcade);
-  font-size: 0.8rem;
-  color: var(--neon-yellow);
-  text-shadow: var(--shadow-yellow);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--figma-ink);
   margin-top: 10px;
-  animation: pulse 1.5s infinite alternate;
 }
 
-/* Main Dashboard Layout */
+/* Dashboard Layout */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 24px;
-  flex: 1;
+  grid-template-columns: 1fr 360px;
+  gap: var(--spacing-lg);
+  align-items: start;
 }
 
 @media (max-width: 1024px) {
   .dashboard-grid {
     grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
   }
 }
 
-/* Card base styling */
+/* Cards & Containers - Figma Editorial Panels */
 .arcade-card {
-  background-color: var(--bg-card);
-  border: 3px solid var(--neon-purple);
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(157, 0, 255, 0.2), inset 0 0 15px rgba(157, 0, 255, 0.1);
-  padding: 24px;
+  background-color: var(--figma-canvas);
+  border: 1px solid var(--figma-hairline);
+  border-radius: var(--rounded-lg);
+  box-shadow: none; /* flat design */
+  padding: var(--spacing-lg);
   position: relative;
   overflow: hidden;
 }
 
 .arcade-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; height: 3px;
-  background: linear-gradient(90deg, var(--neon-pink), var(--neon-cyan), var(--neon-yellow));
+  display: none; /* Remove neon header gradient border */
 }
 
+/* Header border indicator override inside sections */
 .card-title {
-  font-family: var(--font-title);
-  font-size: 1.4rem;
-  color: #fff;
-  text-shadow: var(--shadow-cyan);
-  margin-bottom: 20px;
+  font-family: var(--font-sans);
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--figma-ink);
+  margin-bottom: var(--spacing-lg);
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 2px solid var(--neon-purple);
-  padding-bottom: 8px;
+  border-bottom: 1px solid var(--figma-hairline);
+  padding-bottom: var(--spacing-sm);
 }
 
-/* Arcade Buttons */
+/* Buttons - Pill CTA Style */
 .btn-arcade {
-  font-family: var(--font-arcade);
-  font-size: 0.8rem;
-  padding: 12px 20px;
-  border: 3px solid;
-  border-radius: 8px;
-  background-color: transparent;
-  color: #fff;
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: 1px solid var(--figma-primary);
+  border-radius: var(--rounded-pill);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
   outline: none;
-  text-transform: uppercase;
+  text-transform: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
 }
 
-.btn-pink {
-  border-color: var(--neon-pink);
-  box-shadow: var(--shadow-pink);
-}
-.btn-pink:hover:not(:disabled) {
-  background-color: var(--neon-pink);
-  box-shadow: 0 0 25px var(--neon-pink);
-  transform: scale(1.03);
-}
-.btn-pink:active:not(:disabled) {
-  transform: scale(0.97);
+/* Primary Button: Pure Black background with white text */
+.btn-pink, .btn-purple {
+  background-color: var(--figma-primary);
+  color: var(--figma-on-primary);
+  border-color: var(--figma-primary);
+  box-shadow: none;
 }
 
+.btn-pink:hover:not(:disabled), .btn-purple:hover:not(:disabled) {
+  background-color: #222222;
+  color: var(--figma-on-primary);
+  box-shadow: none;
+  transform: none;
+}
+
+/* Secondary Button: White background with black text */
 .btn-cyan {
-  border-color: var(--neon-cyan);
-  box-shadow: var(--shadow-cyan);
-}
-.btn-cyan:hover:not(:disabled) {
-  background-color: var(--neon-cyan);
-  color: var(--bg-dark);
-  box-shadow: 0 0 25px var(--neon-cyan);
-  transform: scale(1.03);
-}
-.btn-cyan:active:not(:disabled) {
-  transform: scale(0.97);
+  background-color: var(--figma-canvas);
+  color: var(--figma-ink);
+  border-color: var(--figma-hairline);
+  box-shadow: none;
 }
 
-.btn-purple {
-  border-color: var(--neon-purple);
-  box-shadow: var(--shadow-purple);
+.btn-cyan:hover:not(:disabled) {
+  background-color: var(--figma-surface-soft);
+  color: var(--figma-ink);
+  border-color: #b3b3b3;
+  box-shadow: none;
+  transform: none;
 }
-.btn-purple:hover:not(:disabled) {
-  background-color: var(--neon-purple);
-  box-shadow: 0 0 25px var(--neon-purple);
-  transform: scale(1.03);
-}
-.btn-purple:active:not(:disabled) {
+
+.btn-arcade:active:not(:disabled) {
   transform: scale(0.97);
 }
 
 .btn-arcade:disabled {
-  opacity: 0.5;
+  background-color: var(--figma-surface-soft) !important;
+  color: #b3b3b3 !important;
+  border-color: var(--figma-hairline) !important;
   cursor: not-allowed;
+  opacity: 0.8;
   transform: none !important;
   box-shadow: none !important;
 }
 
-/* Big Spin Button */
+/* Giant Spin Button - Refactored to figma-primary giant pill-link */
 .spin-btn-container {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
+  margin-top: var(--spacing-xl);
 }
 
 .btn-spin-giant {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  border: 8px solid var(--neon-pink);
-  background: radial-gradient(circle, #ff0055 0%, #aa003b 100%);
-  color: white;
-  font-family: var(--font-arcade);
-  font-size: 1.6rem;
-  font-weight: bold;
+  width: 100%;
+  max-width: 380px;
+  height: 52px;
+  border-radius: var(--rounded-pill);
+  border: none;
+  background-color: var(--figma-primary);
+  color: var(--figma-on-primary);
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 500;
   cursor: pointer;
-  box-shadow: 0 0 30px var(--neon-pink), inset 0 0 20px rgba(255,255,255,0.4);
-  transition: all 0.15s ease;
+  box-shadow: none;
+  transition: background-color 0.15s ease, transform 0.1s ease;
   position: relative;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  text-shadow: none;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
 }
 
 .btn-spin-giant:hover:not(:disabled) {
-  box-shadow: 0 0 50px var(--neon-pink), inset 0 0 30px rgba(255,255,255,0.6);
-  transform: scale(1.05);
+  background-color: #222222;
+  box-shadow: none;
+  transform: scale(1.01);
 }
 
 .btn-spin-giant:active:not(:disabled) {
-  transform: scale(0.92);
-  box-shadow: 0 0 15px var(--neon-pink);
-  background: radial-gradient(circle, #aa003b 0%, #660020 100%);
+  transform: scale(0.98);
+  background-color: #111111;
 }
 
 .btn-spin-giant:disabled {
-  background: #331f2b;
-  border-color: #553b4b;
-  box-shadow: none;
+  background: var(--figma-surface-soft);
+  color: #b3b3b3;
+  border: 1px solid var(--figma-hairline);
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.8;
+  box-shadow: none;
 }
 
-/* Form Controls */
+/* Inputs & Form Groups */
 .form-group {
-  margin-bottom: 16px;
+  margin-bottom: var(--spacing-md);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--spacing-xs);
 }
 
 .form-label {
-  font-family: var(--font-title);
-  font-size: 0.9rem;
-  color: var(--neon-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--figma-ink);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.8px;
 }
 
 .arcade-input {
-  background-color: var(--bg-input);
-  border: 2px solid var(--neon-purple);
-  border-radius: 6px;
-  color: #fff;
-  padding: 10px 14px;
-  font-family: var(--font-body);
-  font-size: 0.95rem;
+  background-color: var(--figma-canvas);
+  border: 1px solid var(--figma-hairline);
+  border-radius: var(--rounded-md);
+  color: var(--figma-ink);
+  padding: 12px 14px;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 350;
   outline: none;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease;
 }
 
 .arcade-input:focus {
-  border-color: var(--neon-cyan);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+  border-color: var(--figma-primary);
+  box-shadow: none;
 }
 
 .arcade-textarea {
-  min-height: 100px;
+  min-height: 120px;
   resize: vertical;
 }
 
-/* Control Row for Draw Count */
+/* Draw Count Controls */
 .draw-controls {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(31, 20, 53, 0.4);
+  background-color: var(--figma-surface-soft);
   padding: 12px 20px;
-  border-radius: 8px;
-  border: 1px dashed var(--neon-purple);
-  margin-bottom: 20px;
+  border-radius: var(--rounded-md);
+  border: none;
+  margin-bottom: var(--spacing-lg);
 }
 
 .count-picker {
   display: flex;
-  gap: 8px;
+  gap: 6px;
+  background-color: #e6e6e6;
+  padding: 3px;
+  border-radius: var(--rounded-pill);
 }
 
 .btn-count-option {
-  width: 38px;
-  height: 38px;
-  border-radius: 6px;
-  border: 2px solid var(--neon-purple);
-  background-color: var(--bg-input);
-  color: #fff;
-  font-family: var(--font-arcade);
-  font-size: 0.75rem;
+  width: 36px;
+  height: 30px;
+  border-radius: var(--rounded-pill);
+  border: none;
+  background-color: transparent;
+  color: #555555;
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .btn-count-option.active {
-  border-color: var(--neon-cyan);
-  background-color: var(--neon-cyan);
-  color: var(--bg-dark);
-  box-shadow: var(--shadow-cyan);
+  background-color: var(--figma-canvas);
+  color: var(--figma-ink);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
 }
 
 .btn-count-option:hover:not(.active) {
-  border-color: var(--neon-pink);
-  box-shadow: var(--shadow-pink);
+  color: var(--figma-ink);
 }
 
-/* Modal Base */
+/* Modal Styling - Figma Overriding Frame */
 .modal-backdrop {
   position: fixed;
   top: 0; left: 0; width: 100%; height: 100%;
-  background-color: rgba(5, 3, 10, 0.85);
-  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
   z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: var(--spacing-lg);
 }
 
 .modal-content {
-  background-color: var(--bg-card);
-  border: 4px solid var(--neon-pink);
-  border-radius: 12px;
-  box-shadow: 0 0 30px var(--neon-pink);
+  background-color: var(--figma-canvas);
+  border: 1px solid var(--figma-primary);
+  border-radius: var(--rounded-lg);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
   width: 100%;
   max-width: 500px;
-  padding: 24px;
+  padding: var(--spacing-lg);
   position: relative;
-  animation: zoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation: modalPop 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-close {
   position: absolute;
-  top: 14px;
-  right: 14px;
+  top: 18px;
+  right: 18px;
   background: transparent;
   border: none;
-  color: var(--neon-pink);
+  color: var(--figma-ink);
   font-size: 1.5rem;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  line-height: 1;
 }
 
 .modal-close:hover {
-  transform: rotate(90deg);
-  color: var(--neon-cyan);
+  opacity: 0.7;
+  transform: none;
 }
 
-/* Secret Indicator (Tiny dots next to footer) */
+/* Footer Section */
+.app-footer {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-lg) 0;
+  border-top: 1px solid var(--figma-hairline);
+  color: #888888;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+/* Secret Indicator - Subtle monochrome dot */
 .secret-indicator {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--rounded-full);
   display: inline-block;
-  margin-left: 6px;
+  margin-left: 8px;
   vertical-align: middle;
   background-color: transparent;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.2s ease;
 }
 
 .secret-indicator.active {
-  background-color: var(--neon-cyan);
-  box-shadow: 0 0 6px var(--neon-cyan);
+  background-color: var(--figma-primary);
+  box-shadow: none;
 }
 
-/* Footer style */
-.app-footer {
-  text-align: center;
-  margin-top: 30px;
-  padding: 20px 0;
-  color: #6a6480;
-  font-family: var(--font-title);
-  font-size: 0.8rem;
-  letter-spacing: 1px;
-}
-
-/* Keyframes */
-@keyframes flicker {
-  0% { opacity: 0.15; }
-  50% { opacity: 0.18; }
-  100% { opacity: 0.15; }
-}
-
-@keyframes pulse {
-  0% { opacity: 0.6; transform: scale(0.98); }
-  100% { opacity: 1; transform: scale(1.02); }
-}
-
-@keyframes zoomIn {
-  from { opacity: 0; transform: scale(0.9); }
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
-
-/* Utilities */
-.neon-glow-pink { text-shadow: var(--shadow-pink); color: var(--neon-pink); }
-.neon-glow-cyan { text-shadow: var(--shadow-cyan); color: var(--neon-cyan); }
-.neon-glow-yellow { text-shadow: var(--shadow-yellow); color: var(--neon-yellow); }
-.neon-glow-green { text-shadow: var(--shadow-green); color: var(--neon-green); }
