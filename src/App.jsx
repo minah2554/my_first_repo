@@ -3,11 +3,17 @@ import SlotMachine from './components/SlotMachine';
 import StudentManager from './components/StudentManager';
 import SecretModal from './components/SecretModal';
 import EthicsGate from './components/EthicsGate';
+import DocumentModal from './components/DocumentModal';
+
 
 export default function App() {
   const [ethicsAgreed, setEthicsAgreed] = useState(() => {
     return localStorage.getItem('presenter_ethics_agreed') === 'true';
   });
+
+  const [isDocOpen, setIsDocOpen] = useState(false);
+  const [docType, setDocType] = useState('terms'); // 'terms' | 'privacy'
+
 
   // ----------------------------------------------------
   // State Initialization
@@ -328,16 +334,50 @@ export default function App() {
         onClearQueue={handleClearSecretQueue}
       />
 
-      {/* Subtle footer with stealth indicator dot */}
+      <DocumentModal
+        isOpen={isDocOpen}
+        onClose={() => setIsDocOpen(false)}
+        type={docType}
+      />
+
+      {/* Subtle footer with terms, privacy, and manager info */}
       <footer className="app-footer">
-        <p>
-          © 2026 FIGMA PRESENTER SELECTOR
+        <div className="footer-copyright">
+          © 2026 Ready Player Draw. All rights reserved.
           <span 
             className={`secret-indicator ${secretQueue.length > 0 ? 'active' : ''}`}
             title="Stealth override status"
             aria-hidden="true"
           />
-        </p>
+        </div>
+        <div className="footer-links">
+          <button 
+            type="button" 
+            className="footer-btn-link"
+            onClick={() => {
+              setDocType('terms');
+              setIsDocOpen(true);
+            }}
+          >
+            이용약관
+          </button>
+          <span className="footer-separator">|</span>
+          <button 
+            type="button" 
+            className="footer-btn-link"
+            onClick={() => {
+              setDocType('privacy');
+              setIsDocOpen(true);
+            }}
+          >
+            개인정보처리방침
+          </button>
+        </div>
+        <div className="footer-info">
+          <span>개인정보보호책임자: 홍민아 교사 (우신중학교)</span>
+          <span className="footer-separator">|</span>
+          <span>문의: 02-2610-1621</span>
+        </div>
       </footer>
 
       {/* Inline figmaSans title font-weight modulation */}
