@@ -2,8 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import SlotMachine from './components/SlotMachine';
 import StudentManager from './components/StudentManager';
 import SecretModal from './components/SecretModal';
+import EthicsGate from './components/EthicsGate';
 
 export default function App() {
+  const [ethicsAgreed, setEthicsAgreed] = useState(() => {
+    return localStorage.getItem('presenter_ethics_agreed') === 'true';
+  });
+
   // ----------------------------------------------------
   // State Initialization
   // ----------------------------------------------------
@@ -227,6 +232,17 @@ export default function App() {
       setWinners(Array(drawCount).fill(null));
     }
   }, [drawCount, isSpinning]);
+
+  if (!ethicsAgreed) {
+    return (
+      <EthicsGate 
+        onAgree={() => {
+          localStorage.setItem('presenter_ethics_agreed', 'true');
+          setEthicsAgreed(true);
+        }} 
+      />
+    );
+  }
 
   return (
     <main className="app-container">

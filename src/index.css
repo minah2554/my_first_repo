@@ -474,3 +474,260 @@ body {
   from { opacity: 0; transform: scale(0.96); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* ==========================================================================
+   Ethics Gate Screen (AI 윤리 핵심가이드 게이트)
+   ========================================================================== */
+.ethics-gate-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(135deg, #fefbf6 0%, #f4f9f4 50%, #f0f7ff 100%);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-lg);
+}
+
+.ethics-gate-card {
+  background-color: var(--figma-canvas);
+  border: 1px solid var(--figma-primary);
+  border-radius: var(--rounded-lg);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 960px;
+  max-height: 90vh;
+  padding: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ethics-header {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  border-bottom: 1px solid var(--figma-hairline);
+  padding-bottom: var(--spacing-md);
+}
+
+.ethics-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  background-color: var(--figma-surface-soft);
+  border: 1px solid var(--figma-hairline);
+  padding: 6px 14px;
+  border-radius: var(--rounded-pill);
+  margin-bottom: 12px;
+  color: var(--figma-ink);
+}
+
+.ethics-main-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  letter-spacing: -1.2px;
+  color: var(--figma-primary);
+  margin-bottom: 8px;
+}
+
+.ethics-subtitle {
+  font-size: 1rem;
+  color: #666666;
+  font-weight: 350;
+}
+
+.ethics-subtitle strong {
+  font-weight: 600;
+  color: var(--figma-primary);
+}
+
+.ethics-scroll-box {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--spacing-sm);
+  background-color: var(--figma-surface-soft);
+  border-radius: var(--rounded-md);
+  border: 1px solid var(--figma-hairline);
+  margin-bottom: var(--spacing-lg);
+  position: relative;
+}
+
+.ethics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-md);
+}
+
+@media (max-width: 768px) {
+  .ethics-grid {
+    grid-template-columns: 1fr;
+  }
+  .ethics-gate-card {
+    padding: var(--spacing-md);
+    max-height: 95vh;
+  }
+  .ethics-main-title {
+    font-size: 1.6rem;
+  }
+}
+
+.ethics-card {
+  background-color: var(--figma-canvas);
+  border: 1px solid var(--figma-hairline);
+  border-radius: var(--rounded-md);
+  padding: var(--spacing-md);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ethics-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-color: #b3b3b3;
+}
+
+.ethics-card-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.ethics-guide-num {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #888888;
+  background-color: var(--figma-surface-soft);
+  padding: 2px 8px;
+  border-radius: var(--rounded-xs);
+}
+
+.ethics-concept-tag {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--figma-ink);
+}
+
+.ethics-value-badges {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+@media (max-width: 480px) {
+  .ethics-value-badges {
+    margin-left: 0;
+    width: 100%;
+    margin-top: 4px;
+  }
+}
+
+.value-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--rounded-pill);
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.value-badge-orange {
+  background-color: #fff3eb;
+  color: #e25c00;
+  border: 1px solid #ffe1cc;
+}
+
+.value-badge-green {
+  background-color: #effaf1;
+  color: #1ea64a;
+  border: 1px solid #d1f2da;
+}
+
+.value-badge-blue {
+  background-color: #f0f7ff;
+  color: #0066cc;
+  border: 1px solid #d4e8fc;
+}
+
+.value-badge-yellow {
+  background-color: #fffbeb;
+  color: #b28500;
+  border: 1px solid #fef3c7;
+}
+
+.ethics-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-bottom: 8px;
+  color: var(--figma-primary);
+}
+
+.ethics-card-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #555555;
+  font-weight: 350;
+}
+
+.ethics-scroll-hint {
+  text-align: center;
+  padding: var(--spacing-sm) 0;
+  color: #888888;
+  font-size: 0.85rem;
+}
+
+.scroll-arrow-down {
+  display: inline-block;
+  animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(4px); }
+}
+
+.ethics-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--figma-hairline);
+}
+
+.btn-ethics-agree {
+  width: 100%;
+  max-width: 600px;
+  height: 52px;
+  border-radius: var(--rounded-pill);
+  border: 1px solid var(--figma-hairline);
+  background-color: var(--figma-surface-soft);
+  color: #b3b3b3;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-ethics-agree.active {
+  background-color: var(--figma-primary);
+  border-color: var(--figma-primary);
+  color: var(--figma-on-primary);
+  cursor: pointer;
+}
+
+.btn-ethics-agree.active:hover {
+  background-color: #222222;
+  transform: scale(1.01);
+}
+
+.btn-ethics-agree.active:active {
+  transform: scale(0.98);
+}
+
